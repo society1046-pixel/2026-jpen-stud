@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일본어 단어장</title>
+    <style>
+        /* 미니멀 & 심플 감성 디자인 정의 */
+        :root {
+            --bg-color: #FAFAFA;
+            --card-bg: #FFFFFF;
+            --text-main: #222222;
+            --text-sub: #777777;
+            --border-color: #EAEAEA;
+            --accent-color: #495057;
+            --particle-color: #FF6B6B;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; padding: 10px; }
+        .container { width: 100%; max-width: 460px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; min-height: 90vh; display: flex; flex-direction: column; }
+        
+        h1 { font-size: 20px; font-weight: 600; text-align: center; margin: 15px 0 25px 0; letter-spacing: -0.5px; }
+        h2 { font-size: 18px; font-weight: 600; text-align: center; margin-bottom: 20px; }
+        .hidden { display: none !important; }
+        
+        /* 심플한 버튼 스타일 */
+        button { width: 100%; padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); border-radius: 12px; font-size: 15px; font-weight: 500; background: #95A5A6; color: white; cursor: pointer; transition: background 0.2s; }
+        button:active { background: #7F8C8D; }
+        .btn-main { background: var(--accent-color); color: white; border: none; }
+        .btn-main:active { background: #343A40; }
+        .btn-back { background: transparent; color: var(--text-sub); border: none; margin-top: auto; padding: 10px; font-size: 14px; }
+        
+        /* 메인 메뉴 그리드 */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        
+        /* 종합 테스트 체크박스 구역 */
+        .test-select-box { border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 25px; background: #FDFDFD; }
+        .checkbox-group { display: flex; justify-content: space-around; margin: 12px 0; font-size: 14px; color: var(--text-sub); }
+        .checkbox-group input { margin-right: 4px; }
+
+        /* 🗂️ 한눈에 보는 단어 리스트 스타일 */
+        .word-list { max-height: 60vh; overflow-y: auto; padding: 5px; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; background: #FCFCFC; }
+        .word-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 10px; border-bottom: 1px solid var(--border-color); }
+        .word-item:last-child { border-bottom: none; }
+        .word-jp { font-size: 18px; font-weight: 600; width: 40%; }
+        .word-kr { font-size: 14px; color: var(--text-sub); width: 40%; text-align: left; }
+        .btn-audio-small { width: auto; padding: 8px 12px; font-size: 12px; margin: 0; background: #6C757D; border: none; border-radius: 8px; color: white; }
+        .particle { color: var(--particle-color); font-size: 12px; font-weight: normal; margin-left: 4px; }
+
+        /* 📝 퀴즈 섹션 */
+        .question-box { font-size: 20px; font-weight: 600; text-align: center; padding: 25px 10px; border-bottom: 1px solid var(--border-color); margin-bottom: 10px; }
+        .quiz-audio-zone { text-align: center; margin-bottom: 20px; }
+        .quiz-option { background: white; color: var(--text-main); border: 1px solid var(--border-color); text-align: left; padding: 14px 20px; font-size: 15px; }
+        .quiz-option:hover { background: #FAFAFA; border-color: var(--accent-color); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="main-screen">
+        <h1>일본어 학습기</h1>
+        
+        <div class="menu-grid">
+            <button class="btn-main" onclick="openLesson(1)">제 1과</button>
+            <button class="btn-main" onclick="openLesson(2)">제 2과</button>
+            <button class="btn-main" onclick="openLesson(3)">제 3과</button>
+            <button class="btn-main" onclick="openLesson(4)">제 4과</button>
+        </div>
+
+        <div class="test-select-box">
+            <h3 style="font-size:14px; text-align:center; color: var(--text-main);">종합 선택 테스트</h3>
+            <div class="checkbox-group">
+                <label><input type="checkbox" value="1" class="test-chk"> 1과</label>
+                <label><input type="checkbox" value="2" class="test-chk"> 2과</label>
+                <label><input type="checkbox" value="3" class="test-chk"> 3과</label>
+                <label><input type="checkbox" value="4" class="test-chk"> 4과</label>
+            </div>
+            <button onclick="openTestModeSelect(null, true, null)" style="background:#495057; border:none; color:white;">통합 테스트</button>
+        </div>
+    </div>
+
+    <div id="lesson-screen" class="hidden">
+        <h2 id="lesson-title">제 1과</h2>
+        
+        <div id="lesson1-parts" class="hidden">
+            <button onclick="loadWordbook(1, 1)">히라가나 50음도 단어장</button>
+            <button onclick="loadWordbook(1, 2)">1과 단어장 보기</button>
+        </div>
+        <div id="normal-parts">
+            <button onclick="loadWordbook(currentLesson)">전체 단어장 보기</button>
+        </div>
+        
+        <div id="test-lesson1-parts" class="hidden">
+            <button onclick="openTestModeSelect(1, false, 1)" style="background:#212529; color:white; border:none; margin-top:15px;">히라가나 50음도 테스트 풀기</button>
+            <button onclick="openTestModeSelect(1, false, 2)" style="background:#212529; color:white; border:none; margin-top:6px;">제 1과 단어 테스트 풀기</button>
+        </div>
+        
+        <button id="test-normal-btn" onclick="openTestModeSelect(currentLesson, false, null)" style="background:#212529; color:white; border:none; margin-top:15px;">테스트 풀기</button>
+        
+        <button class="btn-back" onclick="showScreen('main-screen')">메인 화면으로</button>
+    </div>
+
+    <div id="test-mode-screen" class="hidden">
+        <h2>테스트 방식을 고르세요</h2>
+        <button class="btn-main" onclick="startQuiz('KR_JP')">1. 한국어 뜻 ➔ 일본어 맞추기</button>
+        <button class="btn-main" onclick="startQuiz('JP_KR')">2. 일본어 보기 ➔ 한국어 뜻 맞추기</button>
+        <button class="btn-back" onclick="showScreen('lesson-screen')">이전으로</button>
+    </div>
+
+    <div id="wordbook-screen" class="hidden">
+        <h2 id="wordbook-title">단어장</h2>
+        
+        <div class="word-list" id="word-list-container"></div>
+        
+        <button onclick="playAllWordsList()" style="background:transparent; color:var(--accent-color); border:1px solid var(--accent-color); margin-top:10px;">🎵 위에서부터 전체 자동 재생</button>
+        <button class="btn-back" onclick="goBackToLesson()">학습 종료 (뒤로가기)</button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <h2 id="quiz-type-title">단어 테스트</h2>
+        <div id="quiz-question" class="question-box">질문</div>
+        <div id="quiz-audio-container" class="quiz-audio-zone"></div>
+        <div id="quiz-options"></div>
+        <button class="btn-back" onclick="goBackToLesson()">테스트 중단</button>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h2>테스트 결과</h2>
+        <div id="result-summary" style="text-align:center; font-size:18px; font-weight:bold; margin-bottom:20px;">총 0문제 중 0문제 정답!</div>
+        
+        <h3 style="font-size:15px; color:var(--text-sub); text-align:left; margin-bottom:10px;">오답 노트 확인</h3>
+        <div class="word-list" id="wrong-answers-list" style="max-height: 50vh;">
+            </div>
+        
+        <button class="btn-main" onclick="goBackToLesson()" style="margin-top:15px;">학습 화면으로 돌아가기</button>
+    </div>
+</div>
+
+<script>
+    // 단어 데이터베이스
+    const wordData = {
+        1: {
+            1: [
+                { base: "あ", particle: "", meaning: "아" }, { base: "い", particle: "", meaning: "이" }, { base: "う", particle: "", meaning: "우" }, { base: "え", particle: "", meaning: "에" }, { base: "お", particle: "", meaning: "오" },
+                { base: "か", particle: "", meaning: "카" }, { base: "き", particle: "", meaning: "키" }, { base: "く", particle: "", meaning: "쿠" }, { base: "け", particle: "", meaning: "케" }, { base: "こ", particle: "", meaning: "코" },
+                { base: "さ", particle: "", meaning: "사" }, { base: "し", particle: "", meaning: "시" }, { base: "す", particle: "", meaning: "스" }, { base: "せ", particle: "", meaning: "세" }, { base: "そ", particle: "", meaning: "소" },
+                { base: "た", particle: "", meaning: "타" }, { base: "ち", particle: "", meaning: "치" }, { base: "つ", particle: "", meaning: "츠" }, { base: "て", particle: "", meaning: "테" }, { base: "と", particle: "", meaning: "토" },
+                { base: "な", particle: "", meaning: "나" }, { base: "に", particle: "", meaning: "니" }, { base: "ぬ", particle: "", meaning: "누" }, { base: "ね", particle: "", meaning: "네" }, { base: "の", particle: "", meaning: "노" },
+                { base: "は", particle: "", meaning: "하" }, { base: "ひ", particle: "", meaning: "히" }, { base: "ふ", particle: "", meaning: "후" }, { base: "へ", particle: "", meaning: "헤" }, { base: "ほ", particle: "", meaning: "호" },
+                { base: "ま", particle: "", meaning: "마" }, { base: "み", particle: "", meaning: "미" }, { base: "む", particle: "", meaning: "무" }, { base: "め", particle: "", meaning: "메" }, { base: "も", particle: "", meaning: "모" },
+                { base: "や", particle: "", meaning: "야" }, { base: "ゆ", particle: "", meaning: "유" }, { base: "よ", particle: "", meaning: "요" },
+                { base: "ら", particle: "", meaning: "라" }, { base: "り", particle: "", meaning: "리" }, { base: "る", particle: "", meaning: "루" }, { base: "れ", particle: "", meaning: "레" }, { base: "ろ", particle: "", meaning: "로" },
+                { base: "わ", particle: "", meaning: "와" }, { base: "を", particle: "", meaning: "오" }, { base: "ん", particle: "", meaning: "응" }
+            ],
+            2: [
+                { base: "いぬ", particle: "", meaning: "개" }, { base: "あし", particle: "", meaning: "발/다리" }, { base: "て", particle: "", meaning: "손" }, { base: "さかな", particle: "", meaning: "생선" },
+                { base: "すし", particle: "", meaning: "초밥" }, { base: "ねこ", particle: "", meaning: "고양이" }, { base: "かお", particle: "", meaning: "얼굴" }, { base: "つくえ", particle: "", meaning: "책상" },
+                { base: "わたし", particle: "", meaning: "나" }, { base: "はな", particle: "", meaning: "꽃" }, { base: "め", particle: "", meaning: "눈" }, { base: "おなか", particle: "", meaning: "배" },
+                { base: "さくら", particle: "", meaning: "벚꽃" }, { base: "やま", particle: "", meaning: "산" }, { base: "ほん", particle: "", meaning: "책" }, { base: "きもの", particle: "", meaning: "기모노" },
+                { base: "みせ", particle: "", meaning: "가게" }, { base: "ひとつ", particle: "", meaning: "1개" }, { base: "ぺこぺこ", particle: "", meaning: "배가 몹시고픈 모양" }, { base: "ちず", particle: "", meaning: "지도" },
+                { base: "はなび", particle: "", meaning: "불꽃놀이" }, { base: "めがね", particle: "", meaning: "안경" }, { base: "えんぴつ", particle: "", meaning: "연필" }, { base: "くだもの", particle: "", meaning: "과일" },
+                { base: "ここ", particle: "", meaning: "여기" }, { base: "ごご", particle: "", meaning: "오후" }, { base: "あじ", particle: "", meaning: "맛" }, 
+                { base: "はん", particle: "", meaning: "반(30분)" }, { base: "ばん", particle: "", meaning: "밤" }, { base: "ぱん", particle: "", meaning: "빵" }
+            ]
+        },
+        2: [
+            { base: "ひゃく", particle: "", meaning: "100(백)" }, { base: "かしゅ", particle: "", meaning: "가수" }, { base: "しょくじ", particle: "", meaning: "식사" }, { base: "がっこう", particle: "", meaning: "학교" },
+            { base: "ざっし", particle: "", meaning: "잡지" }, { base: "みっつ", particle: "", meaning: "3개" }, { base: "きっぷ", particle: "", meaning: "표/티켓" }, { base: "かじ", particle: "", meaning: "화재" },
+            { base: "かんじ", particle: "", meaning: "한자" }, { base: "てんぷら", particle: "", meaning: "튀김" }, { base: "まんなか", particle: "", meaning: "한가운데" }, { base: "かんこく", particle: "", meaning: "한국" },
+            { base: "うどん", particle: "", meaning: "우동" }, { base: "おばさん", particle: "", meaning: "아주머니" }, { base: "おばあさん", particle: "", meaning: "할머니" }, { base: "おじさん", particle: "", meaning: "아저씨" },
+            { base: "おじいさん", particle: "", meaning: "할아버지" }, { base: "ここ", particle: "", meaning: "여기" }, { base: "こうこう", particle: "", meaning: "고등학교" }, { base: "はは / おかあさん", particle: "", meaning: "어머니" },
+            { base: "あに / おにいさん", particle: "", meaning: "형/오빠" }, { base: "すうがく", particle: "", meaning: "수학" }, { base: "あね / おねえさん", particle: "", meaning: "언니/누나" }, { base: "えいが", particle: "", meaning: "영화" },
+            { base: "おおい", particle: "", meaning: "많다" }, { base: "ちち / おとうさん", particle: "", meaning: "아버지" }, { base: "ぜろ / れい", particle: "", meaning: "0" }, { base: "いち", particle: "", meaning: "1" },
+            { base: "に", particle: "", meaning: "2" }, { base: "さん", particle: "", meaning: "3" }, { base: "よん / し", particle: "", meaning: "4" }, { base: "ご", particle: "", meaning: "5" },
+            { base: "ろく", particle: "", meaning: "6" }, { base: "なな / しち", particle: "", meaning: "7" }, { base: "はち", particle: "", meaning: "8" }, { base: "きゅう / く", particle: "", meaning: "9" },
+            { base: "いちじ", particle: "", meaning: "1시" }, { base: "にじ", particle: "", meaning: "2시" }, { base: "さんじ", particle: "", meaning: "3시" }, { base: "よじ", particle: "", meaning: "4시" },
+            { base: "ごじ", particle: "", meaning: "5시" }, { base: "ろくじ", particle: "", meaning: "6시" }, { base: "しちじ", particle: "", meaning: "7시" }, { base: "はちじ", particle: "", meaning: "8시" },
+            { base: "くじ", particle: "", meaning: "9시" }, { base: "じゅうじ", particle: "", meaning: "10시" }, { base: "じゅういちじ", particle: "", meaning: "11시" }, { base: "じゅうにじ", particle: "", meaning: "12시" },
+            { base: "いま", particle: "", meaning: "지금" }, { base: "なんじ", particle: "", meaning: "몇 시" }, { base: "おはようございます", particle: "", meaning: "안녕/안녕하세요(아침인사)" },
+            { base: "こんにちは", particle: "", meaning: "안녕/안녕하세요(점심인사)" }, { base: "こんばんは", particle: "", meaning: "안녕/안녕하세요(저녁인사)" }, { base: "せんせい", particle: "", meaning: "선생님" },
+            { base: "さようなら", particle: "", meaning: "잘가/안녕히 계세요" }, { base: "じゃあ", particle: "", meaning: "그럼/안녕" }, { base: "またね", particle: "", meaning: "또 만나" }, { base: "ばいばい", particle: "", meaning: "잘 가" },
+            { base: "いってきます", particle: "", meaning: "다녀올게/다녀오겠습니다" }, { base: "いってらっしゃい", particle: "", meaning: "다녀와/다녀오세요" }, { base: "ただいま", particle: "", meaning: "다녀왔습니다" },
+            { base: "おかえりなさい", particle: "", meaning: "어서와/어서 오세요" }, { base: "ありがとう / ありがとうございます", particle: "", meaning: "고마워/고맙습니다" }, { base: "すみません / ごめんなさい", particle: "", meaning: "미안합니다/죄송합니다" },
+            { base: "すみません", particle: "", meaning: "미안합니다, 실례합니다, 저기요, 고맙다" }
+        ],
+        3: [
+            { base: "くに", particle: "", meaning: "나라" }, { base: "かんこく", particle: "", meaning: "한국" }, { base: "にほん", particle: "", meaning: "일본" }, { base: "ちゅうごく", particle: "", meaning: "중국" },
+            { base: "あめりか", particle: "", meaning: "미국" }, { base: "はじめまして", particle: "", meaning: "처음 뵙겠습니다" }, { base: "ふらんす", particle: "", meaning: "프랑스" }, { base: "いたりあ", particle: "", meaning: "이탈리아" },
+            { base: "いぎりす", particle: "", meaning: "영국" }, { base: "どいつ", particle: "", meaning: "독일" }, { base: "~です", particle: "", meaning: "~입니다" }, { base: "から きました", particle: "から", meaning: "에서 왔습니다" },
+            { base: "どうぞ", particle: "", meaning: "아무쪼록" }, { base: "よろしく おねがいします", particle: "", meaning: "잘 부탁드립니다" }, { base: "しゅみ", particle: "", meaning: "취미" }, { base: "りょうり", particle: "", meaning: "요리" },
+            { base: "だんす", particle: "", meaning: "댄스" }, { base: "やきゅう", particle: "", meaning: "야구" }, { base: "げえむ", particle: "", meaning: "게임" }, { base: "どくしょ", particle: "", meaning: "독서" },
+            { base: "りょこう", particle: "", meaning: "여행" }, { base: "ぴあの", particle: "", meaning: "피아노" }, { base: "", particle: "は", meaning: "은/는" }, { base: "なんですか", particle: "", meaning: "무엇입니까?" },
+            { base: "わたし", particle: "", meaning: "나/저" }, { base: "", particle: "の", meaning: "~의" }, { base: "~くん", particle: "", meaning: "군" }, { base: "こちら は", particle: "は", meaning: "이쪽은" },
+            { base: "~さん", particle: "", meaning: "~씨" }, { base: "こちらこそ", particle: "", meaning: "저야말로" }, { base: "さっかあ", particle: "", meaning: "축구" }, { base: "しゃしん", particle: "", meaning: "사진" },
+            { base: "すいえい", particle: "", meaning: "수영" }, { base: "", particle: "と", meaning: "~과/와" }, { base: "あっ / ああ", particle: "", meaning: "어/아(감탄사)" }, { base: "ともだち", particle: "", meaning: "친구" },
+            { base: "", particle: "の", meaning: "~의/인" }, { base: "いちねんせい", particle: "", meaning: "1학년" }, { base: "にねんせい", particle: "", meaning: "2학년" }, { base: "さんねんせい", particle: "", meaning: "3학년" },
+            { base: "にゅうがくしき", particle: "", meaning: "입학식" }, { base: "そつぎょうしき", particle: "", meaning: "졸업식" }, { base: "がくさい", particle: "", meaning: "학교 축제" }, { base: "たいいくたいかい", particle: "", meaning: "체육 대회" }
+        ],
+        4: [
+            { base: "ばしょ", particle: "", meaning: "장소" }, { base: "えき", particle: "", meaning: "역" }, { base: "びょういん", particle: "", meaning: "병원" }, { base: "こんびに", particle: "", meaning: "편의점" },
+            { base: "ゆうびんきょく", particle: "", meaning: "우체국" }, { base: "えいがかん", particle: "", meaning: "영화관" }, { base: "こうえん", particle: "", meaning: "공원" }, { base: "といれ", particle: "", meaning: "화장실" },
+            { base: "がっこう", particle: "", meaning: "학교" }, { base: "としょかん", particle: "", meaning: "도서관" }, { base: "ぱんや", particle: "", meaning: "빵집" }, { base: "いえ / うち", particle: "", meaning: "집" },
+            { base: "こうばん", particle: "", meaning: "파출소" }, { base: "どこ", particle: "", meaning: "어디" }, { base: "うえ", particle: "", meaning: "위" }, { base: "した", particle: "", meaning: "아래" },
+            { base: "なか", particle: "", meaning: "안" }, { base: "ひだり", particle: "", meaning: "왼쪽" }, { base: "みぎ", particle: "", meaning: "오른쪽" }, { base: "まえ", particle: "", meaning: "앞" },
+            { base: "うしろ", particle: "", meaning: "뒤" }, { base: "よこ / となり", particle: "", meaning: "옆" }, { base: "あそこ", particle: "", meaning: "저/저기" }, { base: "あの", particle: "", meaning: "저" },
+            { base: "すみません", particle: "", meaning: "실례합니다" }, { base: "どこですか", particle: "", meaning: "어디입니까?" }, { base: "", particle: "に", meaning: "~에" }, { base: "あります / います", particle: "", meaning: "있습니다" },
+            { base: "ありがとうございます", particle: "", meaning: "감사합니다" }, { base: "かぞく", particle: "", meaning: "가족" }, { base: "わたし", particle: "", meaning: "나/저" }, { base: "ちち", particle: "", meaning: "(나의) 아빠" },
+            { base: "はは", particle: "", meaning: "(나의) 엄마" }, { base: "あに", particle: "", meaning: "(나의) 오빠/형" }, { base: "あね", particle: "", meaning: "(나의) 언니/누나" }, { base: "おとうと", particle: "", meaning: "(나의) 남동생" },
+            { base: "いもうと", particle: "", meaning: "(나의) 여동생" }, { base: "おとうさん", particle: "", meaning: "(남의) 아버지" }, { base: "おかあさん", particle: "", meaning: "(남의) 어머니" }, { base: "おにいさん", particle: "", meaning: "(남의) 오빠/형" },
+            { base: "おねえさん", particle: "", meaning: "(남의) 언니/누나" }, { base: "おとうとさん", particle: "", meaning: "(남의)남동생" }, { base: "いもうとさん", particle: "", meaning: "(남의)여동생" }, { base: "", particle: "と", meaning: "~과/와" },
+            { base: "ですか", particle: "", meaning: "입니까?" }, { base: "はい", particle: "", meaning: "네/예" }, { base: "いいえ", particle: "", meaning: "아니요" }, { base: "ではありません", particle: "", meaning: "~이/가 아닙니다" },
+            { base: "おちゃ", particle: "", meaning: "차(먹는거)" }, { base: "みず", particle: "", meaning: "물" }, { base: "けえき", particle: "", meaning: "케이크" }, { base: "いえ", particle: "", meaning: "집" },
+            { base: "いや", particle: "", meaning: "아니" }, { base: "ちかく", particle: "", meaning: "근처" }, { base: "かな", particle: "", meaning: "일까?" }, { base: "けいさつ", particle: "", meaning: "경찰" },
+            { base: "あのう", particle: "", meaning: "저기" }, { base: "あの", particle: "", meaning: "저" }, { base: "あ", particle: "", meaning: "아(감탄사)" }, { base: "ぼく / おれ", particle: "", meaning: "저(남성어)" },
+            { base: "おかえり", particle: "", meaning: "어서와/ 어서오세요" }, { base: "はいって", particle: "", meaning: "들어와(요)" }, { base: "しつれいします", particle: "", meaning: "실례하겠습니다" }, { base: "おかし", particle: "", meaning: "과자" },
+            { base: "あら", particle: "", meaning: "어머" }, { base: "きょう", particle: "", meaning: "오늘" }, { base: "ひる", particle: "", meaning: "점심" }, { base: "ごはん", particle: "", meaning: "밥" },
+            { base: "かつどん", particle: "", meaning: "가쓰돈" }, { base: "さあ", particle: "", meaning: "자" }, { base: "いただきます", particle: "", meaning: "잘 먹겠습니다" }, { base: "おいしい", particle: "", meaning: "맛있다" },
+            { base: "ごちそうさまでした", particle: "", meaning: "잘 먹었습니다" }
+        ]
+    };
+
+    let currentLesson = 1;
+    let currentPart = null;
+    let currentTestPart = null; // 1과용 테스트 파트 저장
+    let activeList = [];
+    
+    let quizPool = [];
+    let currentQuizIndex = 0;
+    let selectedQuizType = 'KR_JP'; 
+    let isComprehensive = false;
+    
+    // 오답을 저장할 배열 추가
+    let wrongAnswers = [];
+
+    // 화면 전환 함수
+    function showScreen(screenId) {
+        ['main-screen', 'lesson-screen', 'test-mode-screen', 'wordbook-screen', 'quiz-screen', 'result-screen'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    // 과 선택
+    function openLesson(lessonNum) {
+        currentLesson = lessonNum;
+        document.getElementById('lesson-title').innerText = `제 ${lessonNum}과 학습`;
+        
+        if(lessonNum === 1) {
+            document.getElementById('lesson1-parts').classList.remove('hidden');
+            document.getElementById('normal-parts').classList.add('hidden');
+            // 1과 테스트 버튼 보이기
+            document.getElementById('test-lesson1-parts').classList.remove('hidden');
+            document.getElementById('test-normal-btn').classList.add('hidden');
+        } else {
+            document.getElementById('lesson1-parts').classList.add('hidden');
+            document.getElementById('normal-parts').classList.remove('hidden');
+            // 기본 테스트 버튼 보이기
+            document.getElementById('test-lesson1-parts').classList.add('hidden');
+            document.getElementById('test-normal-btn').classList.remove('hidden');
+        }
+        showScreen('lesson-screen');
+    }
+
+    // 🗂️ 한 페이지 리스트형 단어장 로드
+    function loadWordbook(lesson, part = null) {
+        currentPart = part;
+        activeList = (lesson === 1) ? wordData[1][part] : wordData[lesson];
+        
+        let titleText = `제 ${lesson}과 단어장`;
+        if (lesson === 1) {
+            titleText = part === 1 ? '히라가나 50음도' : '제 1과 단어장';
+        }
+        document.getElementById('wordbook-title').innerText = titleText;
+        
+        const listContainer = document.getElementById('word-list-container');
+        listContainer.innerHTML = ''; // 기존 목록 초기화
+        listContainer.scrollTop = 0; // 스크롤 맨 위로
+
+        activeList.forEach((item) => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'word-item';
+
+            // 1. 일본어 (+조사) 구역
+            const jpSpan = document.createElement('span');
+            jpSpan.className = 'word-jp';
+            jpSpan.innerHTML = item.base;
+            if (item.particle) {
+                jpSpan.innerHTML += `<span class="particle">[${item.particle}]</span>`;
+            } else if (!item.base && item.particle) {
+                jpSpan.innerHTML = `<span class="particle">[조사: ${item.particle}]</span>`;
+            }
+
+            // 2. 한국어 뜻 구역
+            const krSpan = document.createElement('span');
+            krSpan.className = 'word-kr';
+            krSpan.innerText = item.meaning;
+
+            // 3. 발음 버튼
+            const audioBtn = document.createElement('button');
+            audioBtn.className = 'btn-audio-small';
+            audioBtn.innerText = '듣기';
+            
+            let speakText = (item.base + item.particle).replace(/~/g, '');
+            audioBtn.onclick = () => speak(speakText);
+
+            rowDiv.appendChild(jpSpan);
+            rowDiv.appendChild(krSpan);
+            rowDiv.appendChild(audioBtn);
+
+            listContainer.appendChild(rowDiv);
+        });
+
+        showScreen('wordbook-screen');
+    }
+
+    // 🔊 TTS 음성 재생 (느리게 고정)
+    function speak(text, callback) {
+        if(!text.trim()) { if(callback) callback(); return; }
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 0.6; // 속도 0.6으로 느리게 발음
+        if (callback) utterance.onend = callback;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // 전체 리스트 위에서부터 자동 재생
+    function playAllWordsList() {
+        let i = 0;
+        function loop() {
+            if (i < activeList.length) {
+                let item = activeList[i];
+                let text = (item.base + item.particle).replace(/~/g, '');
+                
+                // 해당 단어 위치로 살짝 스크롤 해주는 효과 (선택 사항)
+                const listContainer = document.getElementById('word-list-container');
+                const rowElements = listContainer.getElementsByClassName('word-item');
+                if(rowElements[i]) {
+                    rowElements[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    rowElements[i].style.backgroundColor = '#EAEAEA'; // 현재 재생중 표시
+                    setTimeout(() => rowElements[i].style.backgroundColor = 'transparent', 1500);
+                }
+
+                speak(text);
+                
+                setTimeout(() => {
+                    i++;
+                    loop();
+                }, 1800); // 다음 단어로 넘어가는 텀
+            } else {
+                alert("자동 재생이 모두 완료되었습니다.");
+            }
+        }
+        loop();
+    }
+
+    // 📝 테스트 모드 진입
+    function openTestModeSelect(lessonNum, comprehensiveFlag, partNum = null) {
+        isComprehensive = comprehensiveFlag;
+        if(!comprehensiveFlag) {
+            currentLesson = lessonNum;
+            currentTestPart = partNum;
+        }
+        showScreen('test-mode-screen');
+    }
+
+    function startQuiz(type) {
+        selectedQuizType = type;
+        quizPool = [];
+        wrongAnswers = []; // 테스트 시작할 때 오답 노트 초기화
+
+        if (isComprehensive) {
+            const checkboxes = document.querySelectorAll('.test-chk:checked');
+            let selectedLessons = [];
+            checkboxes.forEach(chk => selectedLessons.push(parseInt(chk.value)));
+            if(selectedLessons.length === 0) {
+                alert("테스트할 과를 메인 화면에서 체크해야 합니다!");
+                showScreen('main-screen');
+                return;
+            }
+            selectedLessons.forEach(l => {
+                // 종합 테스트일 경우 1과는 단어(part 2)만 포함하도록 기존 유지
+                quizPool = quizPool.concat(l === 1 ? wordData[1][2] : wordData[l]);
+            });
+        } else {
+            // 1과일 경우 선택된 파트(히라가나 혹은 단어)만 풀에 추가
+            quizPool = (currentLesson === 1) ? [...wordData[1][currentTestPart]] : [...wordData[currentLesson]];
+        }
+
+        quizPool.sort(() => Math.random() - 0.5);
+        currentQuizIndex = 0;
+        
+        document.getElementById('quiz-type-title').innerText = (type === 'KR_JP') ? "뜻을 보고 맞추기" : "일어를 보고 맞추기";
+        showScreen('quiz-screen');
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        // 기존의 12문제 제한 삭제, 모든 문제가 출제됨
+        if(currentQuizIndex >= quizPool.length) {
+            // 테스트가 끝났을 때 결과 화면으로 이동
+            showResults();
+            return;
+        }
+
+        let currentQuestion = quizPool[currentQuizIndex];
+        let speakText = (currentQuestion.base + currentQuestion.particle).replace(/~/g, '');
+
+        let options = [currentQuestion];
+        while(options.length < 4) {
+            let randomWord = quizPool[Math.floor(Math.random() * quizPool.length)];
+            if(!options.includes(randomWord)) options.push(randomWord);
+        }
+        options.sort(() => Math.random() - 0.5);
+
+        const qBox = document.getElementById('quiz-question');
+        const audioContainer = document.getElementById('quiz-audio-container');
+        const optContainer = document.getElementById('quiz-options');
+        
+        optContainer.innerHTML = '';
+        audioContainer.innerHTML = '';
+
+        if(selectedQuizType === 'KR_JP') {
+            qBox.innerText = `"${currentQuestion.meaning}"에 해당하는 일본어는?`;
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerText = opt.base + (opt.particle ? ` [조사: ${opt.particle}]` : '');
+                btn.onclick = () => checkAnswer(opt, currentQuestion);
+                optContainer.appendChild(btn);
+            });
+        } else {
+            qBox.innerText = `다음 일본어의 뜻을 고르세요: ${currentQuestion.base}`;
+            
+            const soundBtn = document.createElement('button');
+            soundBtn.className = 'btn-main';
+            soundBtn.style.width = 'auto';
+            soundBtn.style.padding = '8px 20px';
+            soundBtn.style.fontSize = '14px';
+            soundBtn.style.background = '#6C757D';
+            soundBtn.innerText = '발음 듣기';
+            soundBtn.onclick = () => speak(speakText);
+            
+            audioContainer.appendChild(soundBtn);
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.innerText = opt.meaning;
+                btn.onclick = () => checkAnswer(opt, currentQuestion);
+                optContainer.appendChild(btn);
+            });
+        }
+    }
+
+    function checkAnswer(selected, correct) {
+        if(selected.base === correct.base && selected.meaning === correct.meaning) {
+            alert("정답입니다!");
+        } else {
+            alert(`틀렸습니다.\n정답은 [ ${correct.base || ''} : ${correct.meaning} ] 입니다.`);
+            // 틀린 문제 데이터를 오답 배열에 저장
+            wrongAnswers.push({
+                correct: correct,
+                selected: selected
+            });
+        }
+        currentQuizIndex++;
+        nextQuestion();
+    }
+
+    // 🏆 결과 및 오답 노트 출력 함수
+    function showResults() {
+        // 기존 12문제 제한 삭제
+        const totalQuestions = quizPool.length;
+        const correctCount = totalQuestions - wrongAnswers.length;
+        
+        // 결과 요약 텍스트 업데이트
+        document.getElementById('result-summary').innerText = `총 ${totalQuestions}문제 중 ${correctCount}문제 정답!`;
+        
+        const listContainer = document.getElementById('wrong-answers-list');
+        listContainer.innerHTML = ''; // 기존 목록 비우기
+        
+        if (wrongAnswers.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; padding:20px; color:#2ECC71; font-weight:bold;">모두 정답입니다!</div>';
+        } else {
+            // 틀린 문제들을 리스트로 생성
+            wrongAnswers.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'word-item';
+                row.style.flexDirection = 'column';
+                row.style.alignItems = 'flex-start';
+                
+                let questionText, wrongText, correctText;
+                
+                if (selectedQuizType === 'KR_JP') {
+                    questionText = `문제 (한국어 뜻): ${item.correct.meaning}`;
+                    wrongText = `내가 고른 답: ${item.selected.base} ${item.selected.particle ? `[${item.selected.particle}]` : ''}`;
+                    correctText = `정답: ${item.correct.base} ${item.correct.particle ? `[${item.correct.particle}]` : ''}`;
+                } else {
+                    questionText = `문제 (일본어): ${item.correct.base} ${item.correct.particle ? `[${item.correct.particle}]` : ''}`;
+                    wrongText = `내가 고른 답: ${item.selected.meaning}`;
+                    correctText = `정답: ${item.correct.meaning}`;
+                }
+                
+                row.innerHTML = `
+                    <div style="font-weight:bold; color:var(--text-main); margin-bottom:6px;">${questionText}</div>
+                    <div style="color:var(--particle-color); font-size:14px; margin-bottom:4px;">❌ ${wrongText}</div>
+                    <div style="color:#2ECC71; font-size:14px; font-weight:bold;">⭕ ${correctText}</div>
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+        
+        // 결과 화면 보여주기
+        showScreen('result-screen');
+    }
+
+    function goBackToLesson() {
+        window.speechSynthesis.cancel();
+        if(isComprehensive) showScreen('main-screen');
+        else showScreen('lesson-screen');
+    }
+</script>
+
+</body>
+</html>
